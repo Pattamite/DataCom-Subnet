@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% if form %}
+    <form method='POST' action=''>{% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Calculate" class = 'btn btn-default' />
+    </form>
+    {% endif %}
+
+    {% if confirm_message %}
+    <p>{{ confirm_message }}<p>
+    {% endif %}
+{% endblock %}
+
+{% block js %}
+    <script language="javascript">
+        $('#id_network_class').change(function() {populateSubnet(this)});
+        //$('#id_description').addClass('descriptions');
+        subnets = {{ form.subnets | safe }}
+        classes = {{ form.classes | safe}};
+        subnets_text = {{form.subnets_text | safe }}
+        populateNetwork();
+        $("#id_subnet_mask").empty();
+        $("#id_subnet_mask").append('<option value="" disabled selected>First select a network class</option>');
+
+        function populateNetwork() {
+            $('#id_network_class').empty();
+            $("#id_network_class").append('<option value="" disabled selected>Select a network class</option>');
+            $.each(classes, function(v) {
+                $('#id_network_class')
+                    .append($("<option></option>")
+                    .attr("value", classes[v][0])
+                    .text(classes[v][1]));
+            });
+        }
+        function populateSubnet(event) {
+            network_class = $("#id_network_class option:selected").attr("value");
+            $("#id_subnet_mask").empty();
+            $("#id_subnet_mask").append('<option value="" disabled selected>Select a subnet mask</option>');
+            for (let [nc, class_subnet_dict] of Object.entries(subnets)) {
+                if (nc == network_class) {
+                    for (sn in class_subnet_dict) {
+                        $('#id_subnet_mask')
+                            .append($("<option></option>")
+                                .attr("value", class_subnet_dict[sn])
+                                .text(findSubnetText(class_subnet_dict[sn])));
+                    }
+                }
+            }
+        }
+        function findSubnetText(sn_input){
+            sn_input_str = sn_input.toString();
+            ans = "Not found"
+
+            $.each(subnets_text, function(i, v) {
+                value_str = v[0].toString();
+                console.log(value_str);
+                console.log(sn_input_str);
+                if(value_str === sn_input_str){
+                    ans = v[1].toString();
+                }
+            });
+
+            return ans;
+        }
+
+    </script>
+{% endblock %}

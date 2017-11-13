@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from .forms import subnetForm
+import json
 
 def index(request):
     form = subnetForm(request.POST or None)
@@ -11,8 +12,9 @@ def index(request):
         ip4_input = form.cleaned_data['ip4_input']
         confirm_message = str(network_class) + ' ' + str(subnet_mask) + ' ' + str(ip4_input)
 
-    context = {'form' : form,
+    context = {
+    'form' : form,
     'confirm_message' : confirm_message,
     }
-    template = 'index_test.html'
+    template = 'index.html'
     return render(request, template, context)
