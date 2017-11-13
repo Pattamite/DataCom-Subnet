@@ -1,16 +1,42 @@
 {% extends "base.html" %}
+{% load bootstrap %}
 
 {% block content %}
-    {% if form %}
-    <form method='POST' action=''>{% csrf_token %}
-        {{ form }}
-        <input type="submit" value="Calculate" class = 'btn btn-default' />
-    </form>
+    {% if form %} <!--Form-->
+    <div class="row">
+        <div class="col-2 .col-md-4 .col-lg-5"></div>
+        <div class="col-8 .col-md-4 .col-lg-2">
+            <form method='POST' action=''>{% csrf_token %}
+                {{ form|bootstrap }}
+                <input type="submit" value="Calculate" class = 'btn btn-default' />
+            </form>
+        </div>
+    </div>
     {% endif %}
 
-    {% if confirm_message %}
-    <p>{{ confirm_message }}<p>
+    <br />
+
+    {% if info_table %} <!--Info Table-->
+    <div class="row">
+        <div class="col-2 .col-md-4 .col-lg-5"></div>
+        <div class="col-8 .col-md-4 .col-lg-2">
+            <h3>Result</h3>
+            <table class="table table-striped">
+                <tbody>
+                    {% for row in info_table %}
+                        <tr>
+                            {% for data in row %}
+                                <td>{{ data }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
     {% endif %}
+
+
 {% endblock %}
 
 {% block js %}
