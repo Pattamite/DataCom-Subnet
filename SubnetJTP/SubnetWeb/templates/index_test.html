@@ -1,1 +1,10 @@
-<h1>Test</h1>
+{% if form %}
+<form method='POST' action=''>{% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Calculate" class = 'btn btn-default' />
+</form>
+{% endif %}
+
+{% if confirm_message %}
+<p>{{ confirm_message }}<p>
+{% endif %}
