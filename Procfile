@@ -1,1 +1,1 @@
-web: python manage.py run_gunicorn
+web: gunicorn SubnetJTP.wsgi --log-file -
