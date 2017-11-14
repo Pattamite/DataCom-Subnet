@@ -7,7 +7,7 @@ def index(request):
     info_table = None
     network_table_header = None
     network_table = None
-    network_table_limit = 100
+    network_table_limit = 128
 
     if form.is_valid():
         network_class = form.cleaned_data['network_class']
