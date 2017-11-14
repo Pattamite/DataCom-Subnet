@@ -4,8 +4,10 @@ import json
 
 def index(request):
     form = subnetForm(request.POST or None)
-    confirm_message = None
     info_table = None
+    network_table_header = None
+    network_table = None
+    network_table_limit = 100
 
     if form.is_valid():
         network_class = form.cleaned_data['network_class']
@@ -30,7 +32,7 @@ def index(request):
         for i in range(0, 4):
             broadcast_addr[i] |=  wildcard[i]
 
-
+        #---------------------------------------------------------------------------------------------------#
         info_table = []
         info_table.append(['IP Address', makeIpString(ip4)])
         info_table.append(['Network Address', makeIpString(net_addr)])
@@ -50,13 +52,57 @@ def index(request):
         info_table.append(['Binary ID', makeBinaryValue(ip4)])
         info_table.append(['Integer ID', str(makeIntValue(ip4))])
         info_table.append(['Hex ID', makeHexValue(ip4)])
+        #---------------------------------------------------------------------------------------------------#
+        network_table = []
+        entry_count = 0
+        start_value = 0
+        end_value = 0x100000000
+        step_value = makeIntValue(wildcard) + 1
 
+        if network_class == 'A':
+            start_value = makeIntValue(ip4) & 0xff000000
+            end_value = start_value + 0x01000000
+        elif network_class == 'B':
+            start_value = makeIntValue(ip4) & 0xffff0000
+            end_value = start_value + 0x00010000
+        elif network_class == 'C':
+            start_value = makeIntValue(ip4) & 0xffffff00
+            end_value = start_value + 0x00000100
+
+        current_value = start_value
+        #print(makeIpString(ip4) + " / " + str(makeIntValue(ip4)) + " / " + intToIp(start_value) + " / " + intToIp(end_value) + " / " + intToIp(step_value))
+
+        while entry_count < network_table_limit and current_value < end_value :
+            network_addr = intToIp(current_value)
+            usable_range = ""
+            broad_addr = ""
+
+            if subnet_num == 32 :
+                usable_range = "None"
+                broad_addr = network_addr[:]
+            elif subnet_num == 31 :
+                usable_range = "None"
+                broad_addr = intToIp(current_value + 1)
+            else :
+                usable_range = intToIp(current_value + 1) + " - " + intToIp(current_value + step_value - 2)
+                broad_addr = intToIp(current_value + step_value - 1)
+
+            network_table.append([network_addr, usable_range, broad_addr])
+            current_value += step_value
+            entry_count += 1
+
+            if current_value >= end_value :
+                network_table_header = "All Possible '/" + str(subnet_num) + "' Networks"
+            else :
+                network_table_header = "First " + str(network_table_limit) +" Possible '/" + str(subnet_num) + "' Networks"
+        #---------------------------------------------------------------------------------------------------#
 
 
     context = {
     'form' : form,
-    'confirm_message' : confirm_message,
     'info_table' : info_table,
+    'network_table_header' : network_table_header,
+    'network_table' : network_table,
     }
     template = 'index.html'
     return render(request, template, context)
@@ -134,3 +180,11 @@ def ipType(value):
         return 'Private'
     else :
         return 'Public'
+
+def intToIp(value):
+    ans = []
+    ans.append((value & 0xff000000) >> 24)
+    ans.append((value & 0x00ff0000) >> 16)
+    ans.append((value & 0x0000ff00) >> 8)
+    ans.append(value & 0x000000ff)
+    return makeIpString(ans)

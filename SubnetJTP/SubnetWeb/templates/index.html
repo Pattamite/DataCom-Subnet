@@ -15,6 +15,7 @@
     {% endif %}
 
     <br />
+    <br />
 
     {% if info_table %} <!--Info Table-->
     <div class="row">
@@ -24,6 +25,36 @@
             <table class="table table-striped">
                 <tbody>
                     {% for row in info_table %}
+                        <tr>
+                            {% for data in row %}
+                                <td>{{ data }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+    <br />
+    <br />
+
+    {% if network_table %} <!--Network Table-->
+    <div class="row">
+        <div class="col-2 .col-md-4 .col-lg-5"></div>
+        <div class="col-8 .col-md-4 .col-lg-2">
+            {% if network_table_header %}
+                <h3>{{ network_table_header }}</h3>
+            {% endif %}
+            <table class="table table-striped">
+                <tbody>
+                    <tr>
+                        <th>Network Address</th>
+                        <th>Usable Host Range</th>
+                        <th>Broadcast Address</th>
+                    </tr>
+                    {% for row in network_table %}
                         <tr>
                             {% for data in row %}
                                 <td>{{ data }}</td>
@@ -81,8 +112,6 @@
 
             $.each(subnets_text, function(i, v) {
                 value_str = v[0].toString();
-                console.log(value_str);
-                console.log(sn_input_str);
                 if(value_str === sn_input_str){
                     ans = v[1].toString();
                 }
