@@ -101,11 +101,11 @@ def makeIntValue(value):
 
 def makeBinaryValue(value):
     intValue = makeIntValue(value)
-    return bin(intValue)
+    return '{0:#034b}'.format(intValue)
 
 def makeHexValue(value):
     intValue = makeIntValue(value)
-    return hex(intValue)
+    return '{0:#010x}'.format(intValue)
 
 def ipClass(value):
     if value[0] <= 127 :
