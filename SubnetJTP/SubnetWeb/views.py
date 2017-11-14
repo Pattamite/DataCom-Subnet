@@ -42,6 +42,16 @@ def index(request):
         info_table.append(['Wildcard Mask', makeIpString(wildcard)])
         info_table.append(['Binary Subnet Mask', makeBinaryIpString(subnet)])
         info_table.append(['Binary Wildcard Mask', makeBinaryIpString(wildcard)])
+        info_table.append(['IP Class', ipClass(ip4)])
+        info_table.append(['IP Class (For this calculation)', ipClassForCal(network_class)])
+        info_table.append(['CIDR Notation', '/' + str(subnet_num)])
+        info_table.append(['IP Type', ipType(ip4)])
+        info_table.append(['Short', makeIpString(ip4) + ' /' + str(subnet_num)])
+        info_table.append(['Binary ID', makeBinaryValue(ip4)])
+        info_table.append(['Integer ID', str(makeIntValue(ip4))])
+        info_table.append(['Hex ID', makeHexValue(ip4)])
+
+
 
     context = {
     'form' : form,
@@ -80,3 +90,47 @@ def makeBinaryIpString(value):
             for i in range(1, len(value)):
                 ans += ('.' + '{0:08b}'.format(value[i]))
     return ans
+
+def makeIntValue(value):
+    ans = 0
+    if(len(value) > 0):
+        for i in range(0, len(value)):
+            ans *= 256
+            ans += value[i]
+    return ans
+
+def makeBinaryValue(value):
+    intValue = makeIntValue(value)
+    return bin(intValue)
+
+def makeHexValue(value):
+    intValue = makeIntValue(value)
+    return hex(intValue)
+
+def ipClass(value):
+    if value[0] <= 127 :
+        return 'A'
+    elif value[0] <= 191 :
+        return 'B'
+    elif value[0] <= 223 :
+        return 'C'
+    elif value[0] <= 239 :
+        return 'D'
+    else:
+        return 'E'
+
+def ipClassForCal(value):
+    if value == 'ANY' :
+        return 'None'
+    else :
+        return value
+
+def ipType(value):
+    if value[0] == 10 :
+        return 'Private'
+    elif value[0] == 172 and value[1] >= 16 and value[1] <= 31 :
+        return 'Private'
+    elif value[0] == 192 and value[1] == 168 :
+        return 'Private'
+    else :
+        return 'Public'

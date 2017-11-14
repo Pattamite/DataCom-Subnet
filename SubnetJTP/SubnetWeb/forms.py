@@ -3,10 +3,10 @@ from django import forms
 
 class subnetForm(forms.Form):
     NETWORK_CLASS_CHOICES = [
-    ('ANY', 'Any'),
     ('A', 'A'),
     ('B', 'B'),
     ('C', 'C'),
+    ('ANY', 'No Class (Only Subnet bits)'),
     ]
 
     SUBNET_MASK_CHOICES = [
