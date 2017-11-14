@@ -1,1 +1,1 @@
-web: cd .. && gunicorn SubnetJTP.wsgi --log-file -
+web: cd './SubnetJTP/' && gunicorn SubnetJTP.wsgi --log-file -
