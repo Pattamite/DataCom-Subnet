@@ -1,1 +1,1 @@
-web: gunicorn SubnetJTP.wsgi --log-file -
+web: gunicorn /SubnetJTP/SubnetJTP.wsgi --log-file -
